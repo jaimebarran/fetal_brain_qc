@@ -183,14 +183,11 @@ def read_parameter_grid(experiment, parameters, rng=None):
         "noise_feature": NOISE_FEATURES,
         "pca": PCA_FEATURES,
     }
-    print(parameters)
     out_grid = copy.deepcopy(parameters)
     for k, values in parameters.items():
         if k in ["pca", "noise_feature", "scaler__scaler", "model"]:
             for i, v in enumerate(values):
-                print(v)
                 v_str = v.split("(")[0]
-                print(v_str)
                 if v_str in keys_to_eval[k]:
                     assert v == "passthrough"
                     out_grid[k][i] = v
@@ -213,7 +210,6 @@ def read_parameter_grid(experiment, parameters, rng=None):
                         # for reproducibility
                         v = add_to_param(v, "random_state=rng")
                     out_grid[k][i] = eval(v)
-                print("Reading parameters.")
     return out_grid
 
 
@@ -263,8 +259,7 @@ def run_experiment(dataset, experiment, cv, parameters, seed):
         groupby = norm_feature
         print(f"Group is {norm_feature}")
     else:
-        # train_x[inner_group_by] = inner_groups
-        groupby = None  # inner_group_by
+        groupby = None
 
     pipeline = Pipeline(
         steps=[
@@ -281,14 +276,6 @@ def run_experiment(dataset, experiment, cv, parameters, seed):
         ]
     )
     params = read_parameter_grid(experiment, parameters, rng)
-    # params.update(
-    #    {'model__bootstrap': [True, False],
-    #     'model__max_depth': [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, None],
-    #     'model__max_features': ['log2', 'sqrt'],
-    #     'model__min_samples_leaf': [1, 2, 4],
-    #     'model__min_samples_split': [2, 5, 10],
-    #     'model__n_estimators': [200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000]}
-    # )
 
     # Transforming the target: using the quantile transformer
     # to transform the target to a uniform or random distribution
