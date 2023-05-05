@@ -56,6 +56,7 @@ def get_cv(cv_dict, rng=None):
         "CustomStratifiedGroupKFold",
     ]:
         cv_copy["random_state"] = rng
+
     cv_model = cv_func(**cv_copy)
     return cv_model
 
@@ -121,9 +122,8 @@ def save_inner_scores(exp, config_, nested_score):
     scores = list(nested_score["estimator"][0].scoring.keys())
     scores = [f"{m}_test_{k}" for k in scores for m in ["mean", "std"]]
     config = format_config(copy.deepcopy(config_))
-    config_keys = list(config.keys())
-    cols = config_keys + ["outer_split", "inner_idx"] + params + scores
-    results = pd.DataFrame(columns=cols)
+    results = None
+
     for i, gridsearch in enumerate(nested_score["estimator"]):
         len_grid = len(gridsearch.cv_results_["params"])
 
@@ -138,14 +138,17 @@ def save_inner_scores(exp, config_, nested_score):
             )
             cv_step.update(
                 {
-                    k: str(v)
+                    k: str(v) if not isinstance(v, (int, bool, float)) else v
                     for k, v in gridsearch.cv_results_["params"][j].items()
                 }
             )
             cv_step.update({"outer_split": i + 1, "inner_idx": j + 1})
-            results = pd.concat(
-                [results, pd.DataFrame([cv_step])], ignore_index=True
-            )
+            if results is None:
+                results = pd.DataFrame.from_dict([cv_step])
+            else:
+                results = pd.concat(
+                    [results, pd.DataFrame([cv_step])], ignore_index=True
+                )
     results.to_csv(out_path, index=False)
     results.groupby(["outer_split"] + params).mean(numeric_only=True).to_csv(
         out_path_agg, index=False
@@ -185,7 +188,6 @@ def save_outer_scores(exp, config_, nested_score, metrics_list):
         columns=cols + ["features_dropped", "features_importance"]
     )
     for i in range(n_eval):
-
         cv_step = {k: v for k, v in config.items()}
         est = nested_score["estimator"][0]
         cv_step.update({k: str(v) for k, v in est.best_params_.items()})

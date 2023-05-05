@@ -89,7 +89,6 @@ ex.observers.append(MongoObserver())
 
 @ex.config
 def config():
-
     dataset = {  # noqa: F841
         "dataset_path": "/home/tsanchez/Documents/mial/repositories/mriqc-learn/mriqc_learn/datasets/chuv_bcn.tsv",
         "first_iqm": "centroid",
@@ -105,6 +104,7 @@ def config():
         "n_randomized": 50,
         "transform_target": False,
         "tt_dist": "uniform",
+        "n_jobs": -1,
     }
 
     cv = {
@@ -222,7 +222,6 @@ def run_experiment(dataset, experiment, cv, parameters, seed):
     is_regression = experiment["type"] == "regression"
 
     if dataset["dataset_path"].endswith(".tsv"):
-
         dataframe = pd.read_csv(
             Path(dataset["dataset_path"]), index_col=None, delimiter=r"\s+"
         )
@@ -342,6 +341,7 @@ def run_experiment(dataset, experiment, cv, parameters, seed):
             cv=i_cv,
             random_state=rng,
             refit=experiment["scoring"],
+            n_jobs=experiment["n_jobs"],
         )
     else:
         inner_cv_opt = GridSearchCV(
@@ -351,8 +351,9 @@ def run_experiment(dataset, experiment, cv, parameters, seed):
             cv=i_cv,
             refit=experiment["scoring"],
             error_score="raise",
+            n_jobs=experiment["n_jobs"],
         )
-
+    print("INNER CV OPT", inner_cv_opt)
     if not is_regression:
         train_y["rating"] = (
             train_y["rating"] > experiment["classification_threshold"]
@@ -372,6 +373,7 @@ def run_experiment(dataset, experiment, cv, parameters, seed):
             if train_x[col].dtype == "object"
         }
     )
+
     nested_score = cross_validate(
         inner_cv_opt,
         X=train_x[m],
@@ -379,7 +381,6 @@ def run_experiment(dataset, experiment, cv, parameters, seed):
         cv=o_cv,
         scoring=scores,
         groups=outer_groups,
-        n_jobs=5,
         fit_params={"groups": inner_groups},
         return_train_score=True,
         return_estimator=True,
@@ -396,7 +397,6 @@ def run(
     parameters,
     _config,
 ):
-
     nested_score, metrics_list = run_experiment(
         dataset, experiment, cv, parameters, _config["seed"]
     )
