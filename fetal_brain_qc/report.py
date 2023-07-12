@@ -80,7 +80,7 @@ def read_report_snippet(in_file):
 def individual_html(
     in_plots,
     im_info,
-    dataset="fetal_chuv",
+    dataset="SHIP",
     bids_name=None,
     out_path=None,
     do_index=False,

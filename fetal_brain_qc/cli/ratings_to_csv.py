@@ -130,11 +130,13 @@ def main():
                     df_base.at[idx, k] = v
     # Convert some entries to float
     df_base = df_base.dropna()
-    df_base[["rating", "fetal_motion", "bias_field"]].astype(float)
+    df_base[["rating", "blur", "noise", "motion", "bgair"]].astype(float)
     # Add human readable categories to the ratings.
     df_base["rating_text"] = df_base["rating"].apply(rating_text)
-    df_base["fetal_motion_text"] = df_base["fetal_motion"].apply(artifact_text)
-    df_base["bias_field_text"] = df_base["bias_field"].apply(artifact_text)
+    df_base["blur_text"] = df_base["blur"].apply(artifact_text)
+    df_base["noise_text"] = df_base["noise"].apply(artifact_text)
+    df_base["motion_text"] = df_base["motion"].apply(artifact_text)
+    df_base["bgair_text"] = df_base["bgair"].apply(artifact_text)
     # Count the number of slices selected with artifacts.
     df_base["nselected"] = df_base["selected_slices"].apply(len)
 
@@ -146,11 +148,14 @@ def main():
             "run",
             "rating",
             "rating_text",
-            "orientation",
-            "fetal_motion",
-            "fetal_motion_text",
-            "bias_field",
-            "bias_field_text",
+            "blur",
+            "blur_text",
+            "noise",
+            "noise_text",
+            "motion",
+            "motion_text",
+            "bgair",
+            "bgair_text",
             "artifacts",
             "nselected",
             "selected_slices",

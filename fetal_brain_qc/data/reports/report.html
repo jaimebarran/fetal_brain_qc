@@ -6,7 +6,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="generator" content="LRQC" />
-    <title>Low-resolution scan report</title>
+    <title>MREye QC</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
@@ -39,9 +39,10 @@
             }).get().join(',');
 
             var rating = $('#qcslider').val();
-            var orientation = $('#orientation').val();
-            var fetal_motion = $('#motionslider').val();
-            var bias_field = $('#biasslider').val();
+            var blur = $('#blurslider').val();
+            var noise = $('#noiseslider').val();
+            var motion = $('#motionslider').val();
+            var bgair = $('#bgairslider').val();
             var date = new Date(timestamp);
             var day = addZero(date.getDate());
             var month = addZero(date.getMonth() + 1); //Months are zero based
@@ -55,10 +56,11 @@
                 'dataset': ds,
                 'subject': sub,
                 'rating': rating,
-                'orientation': orientation,
                 'artifacts': artifacts,
-                'fetal_motion': fetal_motion,
-                'bias_field': bias_field,
+                'blur': blur,
+                'noise': noise,
+                'motion': motion,
+                'bgair': bgair,
                 'time_sec': (Date.now() - timestamp) / 1000,
                 'timestamp': formattedTime,
                 // 'confidence': $('#confidence').val(),
@@ -224,7 +226,7 @@
                 expected </h1>
         </noscript>
 
-        <h1 class="mt-5 mb-5">Low-resolution scan report</h1>
+        <h1 class="mt-5 mb-5">MREye QC</h1>
 
         <div class="card mt-3" style="width: 480pt;">
             <h2 id="summary" class="card-header">Summary</h2>
@@ -235,7 +237,7 @@
                     <li>Image resolution: {{ im_info["dim"][0] }} x {{ im_info["dim"][1] }} x {{ im_info["dim"][2] }}.
                     </li>
                     <li>Voxel size: {{ im_info["resolution"][0] }} x {{ im_info["resolution"][1] }} x {{
-                        im_info["resolution"][2] }} mm^3.</li>
+                        im_info["resolution"][2] }} mm<sup>3</sup>.</li>
                     <li>Field strength: {{ im_info["field_strength"] }} T.</li>
                 </ul>
             </div>
@@ -282,14 +284,6 @@
                                     <li class="list-group-item list-group-item-success"
                                         style="width: 25%; text-align:center">Excellent</button>
                                 </ul>
-                                <label for="orientation">Brain orientation:</label>
-                                <select name="orientation" id="orientation">
-                                    <option value="">--Choose an orientation--</option>
-                                    <option value="axial">Axial</option>
-                                    <option value="coronal">Coronal</option>
-                                    <option value="sagittal">Sagittal</option>
-                                    <option value="oblique">Oblique</option>
-                                </select>
                             </div>
                             <!-- <div class="accordion-body">
                                 <fieldset id="artifacts-group" class="form-group">
@@ -305,15 +299,43 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="qcartifacts-head">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#qcartifacts-collapse" aria-expanded="false"
+                                data-bs-target="#qcartifacts-collapse" aria-expanded="true"
                                 aria-controls="qcartifacts-collapse">
                                 Record specific artifacts
                             </button>
                         </h2>
-                        <div class="accordion-collapse collapse collapsed" id="qcartifacts-collapse"
+                        <div class="accordion-collapse collapse show" id="qcartifacts-collapse"
                             aria-labelledby="qcartifacts-head">
                             <div class="accordion-body">
-                                <label for="motionslider">Fetal motion:</label>
+                                <label for="blurslider">Blur (contours):</label>
+                                <div id="blurslider-collapse">
+                                    <input type="range" min="0.0" max="3.0" step="0.05" value="0.0" id="blurslider"
+                                        class="slider">
+                                    <ul class="list-group list-group-horizontal slider-labels"
+                                        style="width:80%;margin-left:10%">
+                                        <li class="list-group-item list-group-item-success"
+                                            style="width: 33.3%; text-align:center">Low</button>
+                                        <li class="list-group-item list-group-item-warning"
+                                            style="width: 33.3%; text-align:center">Moderate</button>
+                                        <li class="list-group-item list-group-item-danger"
+                                            style="width: 33.3%; text-align:center">High</button>
+                                    </ul>
+                                </div>
+                                <label for="noiseslider">Noise (low frequencies):</label>
+                                <div id="noiseslider-collapse">
+                                    <input type="range" min="0.0" max="3.0" step="0.05" value="0.0" id="noiseslider"
+                                        class="slider">
+                                    <ul class="list-group list-group-horizontal slider-labels"
+                                        style="width:80%;margin-left:10%">
+                                        <li class="list-group-item list-group-item-success"
+                                            style="width: 33.3%; text-align:center">Low</button>
+                                        <li class="list-group-item list-group-item-warning"
+                                            style="width: 33.3%; text-align:center">Moderate</button>
+                                        <li class="list-group-item list-group-item-danger"
+                                            style="width: 33.3%; text-align:center">High</button>
+                                    </ul>
+                                </div>
+                                <label for="motionslider">Motion (in general):</label>
                                 <div id="motionslider-collapse">
                                     <input type="range" min="0.0" max="3.0" step="0.05" value="0.0" id="motionslider"
                                         class="slider">
@@ -327,9 +349,9 @@
                                             style="width: 33.3%; text-align:center">High</button>
                                     </ul>
                                 </div>
-                                <label for="biasslider">Bias field:</label>
-                                <div id="biasslider-collapse">
-                                    <input type="range" min="0.0" max="3.0" step="0.05" value="0.0" id="biasslider"
+                                <label for="bgairslider">Background/Air artifacts:</label>
+                                <div id="bgairslider-collapse">
+                                    <input type="range" min="0.0" max="3.0" step="0.05" value="0.0" id="bgairslider"
                                         class="slider">
                                     <ul class="list-group list-group-horizontal slider-labels"
                                         style="width:80%;margin-left:10%">
@@ -343,20 +365,12 @@
                                 </div>
                                 <fieldset id="artifacts-group" class="form-group">
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" name="signal-drop" id="art1">
-                                        <label class="form-check-label" for="art1">Signal drop</label>
+                                        <input class="form-check-input" type="checkbox" name="bias-field" id="art1">
+                                        <label class="form-check-label" for="art1">Bias field (intensity non-uniformity)</label>
                                     </div>
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" name="incomplete-fov" id="art2">
-                                        <label class="form-check-label" for="art2">Incomplete field of view</label>
-                                    </div>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" name="noise" id="art3">
-                                        <label class="form-check-label" for="art3">High noise</label>
-                                    </div>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" name="uncategorized" id="art0">
-                                        <label class="form-check-label" for="art0">Uncategorized artifact</label>
+                                        <input class="form-check-input" type="checkbox" name="eyes-closed" id="art2">
+                                        <label class="form-check-label" for="art2">Eyes closed</label>
                                     </div>
                                 </fieldset>
                             </div>
@@ -364,13 +378,13 @@
                     </div>
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="widget-misc-head">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#widget-misc-collapse" aria-expanded="false"
+                            <button class="accordion-button collapse show" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#widget-misc-collapse" aria-expanded="true"
                                 aria-controls="widget-misc-collapse">
                                 Extra details
                             </button>
                         </h2>
-                        <div id="widget-misc-collapse" class="accordion-collapse collapse"
+                        <div id="widget-misc-collapse" class="accordion-collapse collapse show"
                             aria-labelledby="widget-misc-head">
                             <div class="accordion-body">
                                 <div class="input-group">
@@ -428,8 +442,58 @@
                         var payload = read_form();
                     });
 
-                    $('#motionslider').on('input', function () {
+                    $('#blurslider').on('input', function () {
 
+                        if ((Date.now() - timestamp) / time_threshold > 10) {
+                            $('#btn-download').removeClass('disabled');
+                            $('#next-report').removeClass('disabled');
+                            $('#btn-download').removeAttr('aria-disabled');
+                        };
+
+                        $('#blurslider-collapse .list-group-item').removeClass(function (index, classname) {
+                            return (classname.match(/(^|\s)bg-\S+/g) || []).join(' ');
+                        });
+                        $('#blurslider-collapse .list-group-item').removeClass(function (index, classname) {
+                            return (classname.match(/(^|\s)text-\S+/g) || []).join(' ');
+                        });
+
+                        if ($(this).val() < 1.) {
+                            $('#blurslider-collapse .list-group-item-success').addClass('bg-success text-white');
+                        } else if ($(this).val() > 2.) {
+                            $('#blurslider-collapse .list-group-item-danger').addClass('bg-danger text-white');
+                        } else {
+                            $('#blurslider-collapse .list-group-item-warning').addClass('bg-warning text-dark');
+                        };
+
+                        var payload = read_form();
+                    });
+
+                    $('#noiseslider').on('input', function () {
+                        if ((Date.now() - timestamp) / time_threshold > 10) {
+                            $('#btn-download').removeClass('disabled');
+                            $('#next-report').removeClass('disabled');
+                            $('#btn-download').removeAttr('aria-disabled');
+                        };
+
+                        $('#noiseslider-collapse .list-group-item').removeClass(function (index, classname) {
+                            return (classname.match(/(^|\s)bg-\S+/g) || []).join(' ');
+                        });
+                        $('#noiseslider-collapse .list-group-item').removeClass(function (index, classname) {
+                            return (classname.match(/(^|\s)text-\S+/g) || []).join(' ');
+                        });
+
+                        if ($(this).val() < 1.) {
+                            $('#noiseslider-collapse .list-group-item-success').addClass('bg-success text-white');
+                        } else if ($(this).val() > 2.) {
+                            $('#noiseslider-collapse .list-group-item-danger').addClass('bg-danger text-white');
+                        } else {
+                            $('#noiseslider-collapse .list-group-item-warning').addClass('bg-warning text-dark');
+                        };
+                        var payload = read_form();
+
+                    });
+
+                    $('#motionslider').on('input', function () {
                         if ((Date.now() - timestamp) / time_threshold > 10) {
                             $('#btn-download').removeClass('disabled');
                             $('#next-report').removeClass('disabled');
@@ -450,34 +514,35 @@
                         } else {
                             $('#motionslider-collapse .list-group-item-warning').addClass('bg-warning text-dark');
                         };
-
                         var payload = read_form();
+
                     });
 
-                    $('#biasslider').on('input', function () {
+                    $('#bgairslider').on('input', function () {
                         if ((Date.now() - timestamp) / time_threshold > 10) {
                             $('#btn-download').removeClass('disabled');
                             $('#next-report').removeClass('disabled');
                             $('#btn-download').removeAttr('aria-disabled');
                         };
 
-                        $('#biasslider-collapse .list-group-item').removeClass(function (index, classname) {
+                        $('#bgairslider-collapse .list-group-item').removeClass(function (index, classname) {
                             return (classname.match(/(^|\s)bg-\S+/g) || []).join(' ');
                         });
-                        $('#biasslider-collapse .list-group-item').removeClass(function (index, classname) {
+                        $('#bgairslider-collapse .list-group-item').removeClass(function (index, classname) {
                             return (classname.match(/(^|\s)text-\S+/g) || []).join(' ');
                         });
 
                         if ($(this).val() < 1.) {
-                            $('#biasslider-collapse .list-group-item-success').addClass('bg-success text-white');
+                            $('#bgairslider-collapse .list-group-item-success').addClass('bg-success text-white');
                         } else if ($(this).val() > 2.) {
-                            $('#biasslider-collapse .list-group-item-danger').addClass('bg-danger text-white');
+                            $('#bgairslider-collapse .list-group-item-danger').addClass('bg-danger text-white');
                         } else {
-                            $('#biasslider-collapse .list-group-item-warning').addClass('bg-warning text-dark');
+                            $('#bgairslider-collapse .list-group-item-warning').addClass('bg-warning text-dark');
                         };
                         var payload = read_form();
 
                     });
+
                     // $('#confidence').on('input', function () {
                     //     if ((Date.now() - timestamp) / 1000 > 10) {
                     //         $('#btn-download').removeClass('disabled');
@@ -503,15 +568,6 @@
 
 
                     $('#widget-comments').bind('input propertychange', function () {
-                        if ((Date.now() - timestamp) / time_threshold > 10) {
-                            $('#btn-download').removeClass('disabled');
-                            $('#btn-download').removeAttr('aria-disabled');
-                            $('#btn-post').removeAttr('disabled');
-                        };
-                        var payload = read_form();
-                    });
-
-                    $('#orientation').bind('input propertychange', function () {
                         if ((Date.now() - timestamp) / time_threshold > 10) {
                             $('#btn-download').removeClass('disabled');
                             $('#btn-download').removeAttr('aria-disabled');
