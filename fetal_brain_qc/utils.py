@@ -119,3 +119,36 @@ def validate_inputs(args):
                 f"{split} path exists. Please define a different "
                 "`out_path` for the experiment."
             )
+
+
+def csv_to_list(csv_path):
+    """Read through a CSV file and maps each row
+    to the entry of a list.
+    """
+    if csv_path.endswith(".csv"):
+        file_list = []
+        reader = csv.DictReader(open(csv_path))
+        for i, line in enumerate(reader):
+            file_list.append(line)
+    elif csv_path.endswith(".tsv"):
+        file_list = []
+        reader = csv.DictReader(open(csv_path), delimiter="\t")
+        for i, line in enumerate(reader):
+            file_list.append(line)
+    else:
+        raise ValueError("File must be a CSV or TSV file.")
+    return file_list
+
+
+def print_title(text, center=True, char="-"):
+    try:
+        terminal_size = os.get_terminal_size().columns
+    except Exception:
+        terminal_size = 80
+    char_length = min(len(text) + 10, terminal_size)
+    chars = char * char_length
+    text = text.upper()
+    if center:
+        chars = chars.center(terminal_size)
+        text = text.center(terminal_size)
+    print("\n" + chars + "\n" + text + "\n" + chars + "\n")

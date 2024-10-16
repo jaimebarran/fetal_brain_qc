@@ -1,7 +1,7 @@
 def main():
     import argparse
     from fetal_brain_qc.report import generate_report
-    from fetal_brain_utils import csv_to_list, print_title
+    from fetal_brain_qc.utils import csv_to_list, print_title
 
     p = argparse.ArgumentParser()
 
@@ -36,8 +36,8 @@ def main():
     generate_report(
         bids_list,
         out_folder=args.out_path,
-        boundary=20,
-        boundary_tp=20,
+        boundary=30,
+        boundary_tp=30,
         ncols_ip=6,
         n_slices_tp=6,
         every_n_tp=4,
@@ -46,6 +46,24 @@ def main():
         do_index=args.add_js,
         is_sr=args.sr,
     )
+    """Inspired from MRIQC.
+    imp:
+        Path to the brain LR T2w image to be plotted
+    maskp:
+        Path to the brain mask associated with imp
+    boundary:
+        Boundary to be left around the image when cropping it.
+    ncols_ip:
+        Number of columns in the in-plane plot
+    nslices_tp:
+        Number of slices to be displayed in the through-plane views.
+    every_n_tp:
+        Separation between two slices in the through-plane views.
+    annotate:
+        Whether the plots should be annotated
+    cmap:
+        Colormap to be used
+    """
 
     return 0
 

@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 import os.path as op
 import matplotlib.pyplot as plt
-from fetal_brain_utils import get_cropped_stack_based_on_mask
+from .cropping import get_cropped_stack_based_on_mask
 import math
 
 
@@ -118,11 +118,11 @@ def _get_limits(nifti_file, only_plot_noise=False):
 def plot_mosaic(
     imp,
     maskp,
-    boundary=20,
-    boundary_tp=10,
-    ncols_ip=6,
-    n_slices_tp=6,
-    every_n_tp=4,
+    boundary=50,
+    boundary_tp=50,
+    ncols_ip=4,
+    n_slices_tp=10,
+    every_n_tp=6,
     annotate=False,
     cmap="Greys_r",
     report_dir="tmp_report",
