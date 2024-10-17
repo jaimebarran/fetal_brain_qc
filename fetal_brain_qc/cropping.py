@@ -60,10 +60,10 @@ def get_cropped_stack_based_on_mask(
     x_range[0] = np.max([0, x_range[0] - boundary_i])
     x_range[1] = np.min([shape[0], x_range[1] + boundary_i])
 
-    y_range[0] = np.max([0, y_range[0] - boundary_j])
+    y_range[0] = np.max([0, y_range[0] - boundary_j/2])  # /2 to leave less boundary in the brain direction = to see more of the background in the y direction
     y_range[1] = np.min([shape[1], y_range[1] + boundary_j])
 
-    z_range[0] = np.max([0, z_range[0] - boundary_k])
+    z_range[0] = np.max([0, z_range[0] - boundary_k/2])  # /2 to leave less boundary in the brain direction = to see more of the background in the y direction
     z_range[1] = np.min([shape[2], z_range[1] + boundary_k])
 
     new_origin = list(

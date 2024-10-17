@@ -124,8 +124,8 @@ def individual_html(
 def generate_report(
     bids_list,
     out_folder=None,
-    boundary=20,
-    boundary_tp=20,
+    boundary=30,
+    boundary_tp=30,
     ncols_ip=6,
     n_slices_tp=6,
     every_n_tp=4,
