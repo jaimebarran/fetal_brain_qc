@@ -118,7 +118,8 @@ def _get_limits(nifti_file, only_plot_noise=False):
 def plot_mosaic(
     imp,
     maskp,
-    boundary,
+    boundary_x,
+    boundary_y,
     boundary_tp,
     ncols_ip,
     n_slices_tp,
@@ -133,8 +134,8 @@ def plot_mosaic(
     imc = get_cropped_stack_based_on_mask(
         im,
         mask,
-        boundary_i=boundary/2,  # /2 to have more boundary in the y (vertical) direction of the eye
-        boundary_j=boundary,
+        boundary_i=boundary_x,
+        boundary_j=boundary_y,
         boundary_k=boundary_tp,
     )
 

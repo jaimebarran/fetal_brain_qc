@@ -124,8 +124,9 @@ def individual_html(
 def generate_report(
     bids_list,
     out_folder=None,
-    boundary=30,
-    boundary_tp=30,
+    boundary_x=10,
+    boundary_y=35,
+    boundary_tp=15,
     ncols_ip=6,
     n_slices_tp=6,
     every_n_tp=4,
@@ -156,7 +157,8 @@ def generate_report(
             out_plots = plot_mosaic_sr(
                 im_path,
                 mask_path,
-                boundary=0,
+                boundary_x=0,
+                boundary_y=0,
                 ncols=ncols_ip,
                 annotate=annotate,
                 cmap=cmap,
@@ -166,7 +168,8 @@ def generate_report(
             out_plots = plot_mosaic(
                 im_path,
                 mask_path,
-                boundary=boundary,
+                boundary_x=boundary_x,
+                boundary_y=boundary_y,
                 boundary_tp=boundary_tp,
                 ncols_ip=ncols_ip,
                 n_slices_tp=n_slices_tp,

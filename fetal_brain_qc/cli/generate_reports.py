@@ -36,8 +36,9 @@ def main():
     generate_report(
         bids_list,
         out_folder=args.out_path,
-        boundary=30,
-        boundary_tp=30,
+        boundary_x=10,
+        boundary_y=35,
+        boundary_tp=15,
         ncols_ip=6,
         n_slices_tp=6,
         every_n_tp=4,
