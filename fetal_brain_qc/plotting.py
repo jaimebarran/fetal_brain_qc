@@ -161,7 +161,7 @@ def plot_mosaic(
             cmap=cmap,
             ax=ax,
             spacing=zooms[:2],
-            label="%d" % (z_val-10),
+            label="%d" % z_val,
             annotate=annotate,
         )
 
