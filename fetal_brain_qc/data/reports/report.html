@@ -147,6 +147,11 @@
             margin: 0 20px;
         }
 
+        .accordion-body {
+            max-height: 200px; /* Adjust the max height as needed */
+            overflow-y: auto;
+        }
+
         .add-padding {
             padding-top: 15px;
         }
@@ -256,7 +261,7 @@
         </div>
         {% endfor %}
 
-        <div id="rating-menu" class="card position-fixed d-none" style="width: 30%; top: 100px; left: 65%;">
+        <div id="rating-menu" class="card position-fixed d-none" style="width: 30%; top: 60px; left: 65%;">
             <div class="card-header m-0">Rate Image
                 <button type="button" class="btn-close position-absolute top-0 end-0" aria-label="Close"
                     id="close-rating-menu" onclick="toggle_rating()" style="margin: 10px 10px 0 0"></button>
@@ -392,7 +397,7 @@
                                             style="width: 25%; text-align:center">Excellent</button>
                                     </ul>
                                 </div>
-                                <label for="qcslider2">Quality Optic Nerve + RM</label>
+                                <label for="qcslider2">Quality Optic Nerve + Rectus Muscles</label>
                                 <div id="qcslider2-collapse">
                                     <input type="range" min="0.0" max="4.0" step="0.05" value="2." id="qcslider2"
                                         class="slider" style="width:100%; margin-left:0%">
