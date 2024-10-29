@@ -147,12 +147,12 @@ def plot_mosaic(
 
     nrows = math.ceil(nslices / ncols_ip)
 
-    fig = plt.figure(figsize=(12, nrows * 2))
+    fig = plt.figure(figsize=(8, nrows * 2))
 
     vmin, vmax = _get_limits(im_data, only_plot_noise=False)
 
     naxis = 1
-    for z_val in range(nslices - 1, -1, -1):
+    for z_val in range(nslices - 10, 9, -1):
         ax = fig.add_subplot(nrows, ncols_ip, naxis)
         plot_slice(
             im_data[:, :, z_val],
@@ -161,7 +161,7 @@ def plot_mosaic(
             cmap=cmap,
             ax=ax,
             spacing=zooms[:2],
-            label="%d" % z_val,
+            label="%d" % (z_val-10),
             annotate=annotate,
         )
 
@@ -181,12 +181,12 @@ def plot_mosaic(
         mid_x + n_slices_tp // 2 * every_n_tp - every_n_tp // 2, im_data.shape[0]
     )
 
-    fig2 = plt.figure(figsize=(12, math.ceil(nrows * 4 / 3)))
+    fig2 = plt.figure(figsize=(8, math.ceil(nrows * 4 / 3)))
 
     naxis = 1
 
     for x_val in range(min_x, max_x, every_n_tp):
-        ax = fig2.add_subplot(nrows, 2, naxis)
+        ax = fig2.add_subplot(nrows, 4, naxis)
 
         plot_slice(
             im_data[x_val, :, :],
@@ -214,9 +214,9 @@ def plot_mosaic(
     )
 
     naxis = 1
-    fig3 = plt.figure(figsize=(12, math.ceil(nrows * 4 / 3)))
+    fig3 = plt.figure(figsize=(8, math.ceil(nrows * 4 / 3)))
     for y_val in range(min_y, max_y, every_n_tp):
-        ax = fig3.add_subplot(3, 2, naxis)
+        ax = fig3.add_subplot(nrows, 6, naxis)
 
         plot_slice(
             im_data[:, y_val, :],
