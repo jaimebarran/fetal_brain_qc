@@ -34,9 +34,8 @@
             // Parse the id of selected image in the form of axes_<n>
             // Return <n> - 1 to have the slice number aligned with the
             // displayed number
-            // TODO: get correct slice number
             var selected_im = $(".selected_img").map(function () {
-                return this.id
+                return parseInt(this.id.split('_')[1]) - 1;
             }).get().join(',');
 
             var rating1 = $('#qcslider1').val();  // quality globe + lens
@@ -658,7 +657,7 @@
 
                     {% for _, svg_id, _ in svg_files %}
                     {% if svg_id not in ("tp1", "tp2") %}
-                    $('#report-{{ svg_id }} g[id^="ax_"]').on('click', function (e) {
+                    $('#report-{{ svg_id }} g[id^="axes_"]').on('click', function (e) {
                         if ($(this).prop('clicked')) {
                             $(this).prop('clicked', false);
                             $(this).removeClass('selected_img');
