@@ -130,8 +130,11 @@ def main():
                     df_base.at[idx, k] = v
     # Convert some entries to float
     df_base = df_base.dropna()
-    df_base[["rating1", "rating2", "blur", "noise", "motion", "bgair"]].astype(float)
+    df_base[["rating1", "rating2"]] = df_base[["rating1", "rating2"]].astype(float)
+    df_base["rating"] = df_base[["rating1", "rating2"]].mean(axis=1)
+    df_base[["rating", "blur", "noise", "motion", "bgair"]].astype(float)
     # Add human readable categories to the ratings.
+    df_base["rating_text"] = df_base["rating"].apply(rating_text)
     df_base["rating1_text"] = df_base["rating1"].apply(rating_text)
     df_base["rating2_text"] = df_base["rating2"].apply(rating_text)
     df_base["blur_text"] = df_base["blur"].apply(artifact_text)
@@ -147,6 +150,8 @@ def main():
             "sub",
             "ses",
             "run",
+            "rating",
+            "rating_text",
             "rating1",
             "rating1_text",
             "rating2",
