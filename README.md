@@ -20,9 +20,9 @@ To install this repository, first clone it via
 
 ``` bash
 git clone git@github.com:Medical-Image-Analysis-Laboratory/fetal_brain_qc.git
+```
 
-``` bash
-and enter into the directory. Create a conda environment using `conda env create -f environment.yml `
+and enter into the directory. Create a conda environment using `conda env create -f environment.yml`
 
 ### fetal_brain_utils
 
