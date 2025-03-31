@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 import os.path as op
 import matplotlib.pyplot as plt
-from .cropping import get_cropped_stack_based_on_mask
+from fetal_brain_utils import get_cropped_stack_based_on_mask
 import math
 
 
@@ -118,24 +118,40 @@ def _get_limits(nifti_file, only_plot_noise=False):
 def plot_mosaic(
     imp,
     maskp,
-    boundary_x,
-    boundary_y,
-    boundary_tp,
-    ncols_ip,
-    n_slices_tp,
-    every_n_tp,
+    boundary=20,
+    boundary_tp=10,
+    ncols_ip=6,
+    n_slices_tp=6,
+    every_n_tp=4,
     annotate=False,
     cmap="Greys_r",
     report_dir="tmp_report",
 ):
-    
+    """Inspired from MRIQC.
+    imp:
+        Path to the brain LR T2w image to be plotted
+    maskp:
+        Path to the brain mask associated with imp
+    boundary:
+        Boundary to be left around the image when cropping it.
+    ncols_ip:
+        Number of columns in the in-plane plot
+    nslices_tp:
+        Number of slices to be displayed in the through-plane views.
+    every_n_tp:
+        Separation between two slices in the through-plane views.
+    annotate:
+        Whether the plots should be annotated
+    cmap:
+        Colormap to be used
+    """
     im = ni.load(imp)
     mask = ni.load(maskp)
     imc = get_cropped_stack_based_on_mask(
         im,
         mask,
-        boundary_i=boundary_x,
-        boundary_j=boundary_y,
+        boundary_i=boundary,
+        boundary_j=boundary,
         boundary_k=boundary_tp,
     )
 
@@ -147,7 +163,7 @@ def plot_mosaic(
 
     nrows = math.ceil(nslices / ncols_ip)
 
-    fig = plt.figure(figsize=(8, nrows * 2))
+    fig = plt.figure(figsize=(12, nrows * 2))
 
     vmin, vmax = _get_limits(im_data, only_plot_noise=False)
 
@@ -171,25 +187,25 @@ def plot_mosaic(
     mid_x = int(
         np.nonzero(
             np.array(
-                [im_data[i, :, :].sum() for i in range(im_data.shape[0])]
+                [mask.get_fdata()[i, :, :].sum() for i in range(mask.shape[0])]
             )
         )[0].mean()
     )
 
     min_x = max(mid_x - n_slices_tp // 2 * every_n_tp, 0)
     max_x = min(
-        mid_x + n_slices_tp // 2 * every_n_tp - every_n_tp // 2, im_data.shape[0]
+        mid_x + n_slices_tp // 2 * every_n_tp - every_n_tp // 2, mask.shape[0]
     )
 
-    fig2 = plt.figure(figsize=(8, math.ceil(nrows * 4 / 3)))
+    fig2 = plt.figure(figsize=(12, math.ceil(nrows * 4 / 3)))
 
     naxis = 1
 
     for x_val in range(min_x, max_x, every_n_tp):
-        ax = fig2.add_subplot(nrows, 4, naxis)
+        ax = fig2.add_subplot(nrows, 2, naxis)
 
         plot_slice(
-            im_data[x_val, :, :],
+            im.get_fdata()[x_val, :, :],
             vmin=vmin,
             vmax=vmax,
             cmap=cmap,
@@ -203,23 +219,23 @@ def plot_mosaic(
     mid_y = int(
         np.nonzero(
             np.array(
-                [im_data[:, i, :].sum() for i in range(im_data.shape[1])]
+                [mask.get_fdata()[:, i, :].sum() for i in range(mask.shape[1])]
             )
         )[0].mean()
     )
 
     min_y = max(mid_y - n_slices_tp // 2 * every_n_tp, 0)
     max_y = min(
-        mid_y + n_slices_tp // 2 * every_n_tp - every_n_tp // 2, im_data.shape[1]
+        mid_y + n_slices_tp // 2 * every_n_tp - every_n_tp // 2, mask.shape[1]
     )
 
     naxis = 1
-    fig3 = plt.figure(figsize=(8, math.ceil(nrows * 4 / 3)))
+    fig3 = plt.figure(figsize=(12, math.ceil(nrows * 4 / 3)))
     for y_val in range(min_y, max_y, every_n_tp):
-        ax = fig3.add_subplot(nrows, 6, naxis)
+        ax = fig3.add_subplot(3, 2, naxis)
 
         plot_slice(
-            im_data[:, y_val, :],
+            im.get_fdata()[:, y_val, :],
             vmin=vmin,
             vmax=vmax,
             cmap=cmap,
